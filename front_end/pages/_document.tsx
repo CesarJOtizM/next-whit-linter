@@ -8,9 +8,9 @@ import Document, {
 import { ServerStyleSheet } from 'styled-components';
 
 class MyDocument extends Document {
-  static async getInitialProps({ renderPage }: DocumentContext) {
+  static async getInitialProps(ctx: DocumentContext) {
     const sheet = new ServerStyleSheet();
-    const page = renderPage(
+    const page = ctx.renderPage(
       (App) => (props) => sheet.collectStyles(<App {...props} />)
     );
     const styleTags = sheet.getStyleElement();

@@ -1,28 +1,24 @@
-import type { AppProps } from 'next/app';
-import { createGlobalStyle } from 'styled-components';
+import { ApolloProvider } from '@apollo/client';
+import withApollo from '../lib/withApollo';
+import { GlobalStyles } from '../styles/GlobalStyles';
 
-const GlobalStyles = createGlobalStyle`
-html{
-  --yellow:#FFE200;
-  --red: #FF2D55;
-  --orange: #FF8000;
-  --blue:#0500FF;
-  --black:#333333;
-  --gray: #E5E5E5;
-}
-body{
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: var(--gray);
-}
-`;
-
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps, apollo }: any) {
   return (
-    <>
+    <ApolloProvider client={apollo}>
       <GlobalStyles />
       <Component {...pageProps} />
-    </>
+    </ApolloProvider>
   );
 }
 
-export default MyApp;
+MyApp.getInitialProps = async function ({ Component, ctx }: any) {
+  let pageProps: any = {};
+  if (Component.getInitialProps) {
+    pageProps = await Component.getInitialProps(ctx);
+  }
+  pageProps.query = ctx.query;
+
+  return { pageProps };
+};
+
+export default withApollo(MyApp);
